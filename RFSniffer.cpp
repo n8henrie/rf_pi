@@ -12,12 +12,16 @@
         - `make`
         - `./RFSniffer`
         - Click the buttons on your RF remote
-        - Should display important info including decimal and binary RF codes
-          and *approximate* pulse length (mine shows 191 / 192 when I think
-          actual is 190)
+        - Output should look something like:
+```
+Decimal: 7508342
+Bit length: 24
+Pulse length: 192
+Binary: 100l01000111110110110001
+```
         - Write it down, profit
 
-    Please reference instructions in the README and send.cpp .
+    Please also reference instructions in the README and send.cpp.
 */
 
 #include "RCSwitch.h"
