@@ -95,11 +95,17 @@ You'll need your **decimal** RF code, which you can find with RFSniffer.
 ```bash
 git clone https://github.com/n8henrie/rf_pi.git
 cd rf_pi
-# git checkout wheezy # only if on wheezy, stay on master for jessie
+
+# Only if on wheezy, stay on master for jessie:
+# git checkout wheezy
+
+# Edit files with your pin values, etc.
 vim RFSniffer.cpp # edit to change your pin number if needed
 vim send.cpp # edit to change your pin number / pulse length if needed
-make # will ask for sudo privileges for the `setcap` step and will give an
-error if you didn't install libcap2-bin
+
+# Will ask for sudo privileges for the `setcap` step and will give an (ignored)
+# error if you didn't install libcap2-bin:
+make
 ```
 
 ### Raspbian Jessie
