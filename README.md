@@ -135,9 +135,12 @@ make
 ## Usage
 
 1. Wire up your 433 MHz RF transmitter and / or receiver
-1. Note your BCM pin number(s): <https://wiringpi.com/pins>
-1. `./RFSniffer`
-1. `./send 12345` where 12345 is your **decimal** RF code
+1. Note your **BCM** pin number(s): <https://wiringpi.com/pins>
+1. To find your codes: `./RFSniffer`
+1. To send a code: `./send 12345 [23456] [34567]...` where 12345 is a
+   **decimal** RF code
+
+### Usage notes
 
 - If set up as described above does *not* require root privileges
 - If called directly from the command line (e.g. `./send`) it will try to take
@@ -146,6 +149,11 @@ make
 - Exports the `send` function in the shared library `send.so`, which does *not*
   attempt to set scheduling priority. If needed, scheduling priority should be
   done in whatever program is calling the function
+- `send` accepts as many decimal RF codes as you want to give it (as subsequent
+  arguments) and cycles through calling each multiple times (as configured in
+  send.cpp, default 3 times). This is to facilitate toggling "groups" of
+  switches with maximum reliability. If you put a single switch's on and off
+  code as arguments, it will just flicker that switch on and off.
 
 ## `send.py`
 
@@ -175,7 +183,10 @@ $ file /usr/bin/python3.4
 Verify it's set with `getcap /path/to/python3.4` -- should return
 `/path/to/python3.4 = cap_sys_nice+ep`.
 
+`send.py` can either send the decimal RF code(s) given as argments, (just
+like `./send`), or you can run it in "test" mode, which
+
 ### `send.py` usage:
 
-- `python3 send.py 12345`
-- `python3 send.py test`
+- Send a code: `python3 send.py 12345`
+- Use `test` mode: `python3 send.py test`
