@@ -90,6 +90,7 @@ You'll need your **decimal** RF code, which you can find with RFSniffer.
 1. Identify [your gpio pin(s)](http://wiringpi.com/pins)
 1. Recommended: to take advanced of scheduling priority, `sudo apt-get install
    libcap2-bin`
+1. Clone the repo, edit files as needed, and `make`:
 
 ```bash
 git clone https://github.com/n8henrie/rf_pi.git
