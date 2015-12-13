@@ -1,0 +1,6 @@
+*.o
+*.o
+*.so
+send
+RFSniffer
+.python-version

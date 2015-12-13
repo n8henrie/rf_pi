@@ -1,0 +1,13 @@
+# Installation: `sudo cp -i rf_setup.service /etc/systemd/system/`
+[Unit]
+Description=Setup rf_pi gpio exports and permissions
+After=syslog.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/path/to/rf_setup.sh start
+ExecStop=/path/to/rf_setup.sh stop
+
+[Install]
+WantedBy=multi-user.target
