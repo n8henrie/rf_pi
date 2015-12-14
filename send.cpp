@@ -44,14 +44,7 @@ extern "C" int send(int num_args, int iterations, int switches[]) {
     int PULSELENGTH = 190;
     int BITLENGTH = 24;
 
-    // Set the env variable to use /dev/gpiomem for easier rootless access.
-    // Will *not* overwrite the existing value, so if you know you don't want
-    // this, either `export WIRINGPI_GPIOMEM=0` beforehand or comment the line
-    // out.
-    // http://wiringpi.com/wiringpi-update-to-2-29/
-    setenv("WIRINGPI_GPIOMEM", "1", 0);
-
-    if (wiringPiSetupGpio() == -1) return 1;
+    if (wiringPiSetupSys() == -1) return 1;
 	RCSwitch mySwitch = RCSwitch();
 	mySwitch.enableTransmit(PIN);
     mySwitch.setPulseLength(PULSELENGTH);

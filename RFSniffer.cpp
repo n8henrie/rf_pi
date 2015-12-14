@@ -36,9 +36,8 @@ int main(int argc, char *argv[]) {
     int PIN = 27;
 
     printf("Setting up GPIO...\n");
-    setenv("WIRINGPI_GPIOMEM", "1", 0);
-    if(wiringPiSetupGpio() == -1)
-        return 0;
+    if(wiringPiSetupSys() == -1)
+      return 0;
 
     mySwitch = RCSwitch();
     mySwitch.enableReceive(PIN);  // Receiver on inerrupt 0 => that is pin #2
