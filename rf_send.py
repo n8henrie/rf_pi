@@ -63,6 +63,15 @@ def hi_priority(func):
             os.sched_setscheduler(0, os.SCHED_RR, sched)
             did_sched = True
 
+        # AttributeError probably means running less than python3.3
+        except AttributeError as e:
+            print(e)
+            print("\nLooks like you may be running a python version less than "
+                  "3.3, which means you can't use the os.sched stuff required for the @hi_priority decorator. `send.py` may still work, "
+                  "probably just with less reliability than it would with python >= 3.3. To get rid of this message, comment out the `@hi_priority` decorator "
+                  "above the `rf_send` function, since it's not working anyway, or upgrade python to >= 3.3")
+            func(*args, **kwargs)
+
         except PermissionError as e:
             msg = ("Looks like you haven't set scheduling capabilities "
                    "for your python executable, so you can't run with "
