@@ -68,7 +68,7 @@ def hi_priority(func):
             print(e)
             print("\nLooks like you may be running a python version less than "
                   "3.3, which means you can't use the os.sched stuff required for the @hi_priority decorator. `send.py` may still work, "
-                  "probably just with less reliability than it would with python >= 3.3. To get rid of this message, comment out the `@hi_priority` decorator "
+                  "probably just with less reliability than it would with python >= 3.3. To disable this message, comment out the `@hi_priority` decorator "
                   "above the `rf_send` function, since it's not working anyway, or upgrade python to >= 3.3")
             func(*args, **kwargs)
 
