@@ -39,7 +39,8 @@ DEFAULT_TEST_OFFCODE = 54321
 
 def hi_priority(func):
     """Decorator to set close to realtime scheduling policy for things that
-    need realtime (like RF signal transmission)."""
+    benefit from near-realtime execution (like RF signal transmission)."""
+
     @wraps(func)
     def wrapper(*args, **kwargs):
         try:
@@ -47,18 +48,27 @@ def hi_priority(func):
             sched = os.sched_param(pri)
             os.sched_setscheduler(0, os.SCHED_RR, sched)
 
+        # AttributeError probably means running less than python3.3
+        except AttributeError as e:
+            print(e)
+            print("\nLooks like you may be running a python version less than "
+                  "3.3, which means you can't use the os.sched stuff required for the @hi_priority decorator. `send.py` may still work, "
+                  "probably just with less reliability than it would with python >= 3.3. To disable this message, comment out the `@hi_priority` decorator "
+                  "above the `rf_send` function, since it's not working anyway, or upgrade python to >= 3.3")
+            func(*args, **kwargs)
+
         except PermissionError as e:
             print(e)
             print("\nLooks like you haven't set scheduling capabilities for "
                   "your python executable, so you can't run with high "
-                  "priority. Consider running `sudo setcap cap_sys_nice+ep "
-                  "/path/to/python3`. NB: will *not* work on symlinks, you "
-                  "must provide the path to the actual python binary.")
-            raise
+                  "priority. To disable this message, either consider running `sudo setcap cap_sys_nice+ep "
+                  "/path/to/python3` or comment out the `@hi_priority` decorator above the rf_send function, since it's not working anyway. NB: `setcap` will *not* work on symlinks, you "
+                  "must provide the path to the actual python3 executable.")
+            func(*args, **kwargs)
 
-        func(*args, **kwargs)
-
-        os.sched_yield()
+        else:
+            func(*args, **kwargs)
+            os.sched_yield()
     return wrapper
 
 
