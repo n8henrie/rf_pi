@@ -7,13 +7,16 @@ Raspberry Pi. Includes example decorator to make a function run as high
 priority, which is important for reliable timing of the RF transmission.
 
 Prerequisites:
-    - **May have security ramifications**
+    - Requires python >= 3.3 for optimal reliability, but runs on prior
+      versions including 2.7 if needed
     - `sudo apt-get install libcap2-bin` to get the `setcap` command
     - `sudo setcap cap_sys_nice+ep /path/to/python3` to allow python to set
-      scheduling priority
-    - Must use the actual path to the binary, doesn't work with a symlink
-    - Verify permissions were set with `getcap /path/to/python3`, should
-      return `/path/to/python3 = cap_sys_nice+ep`
+      scheduling priority, but see disclaimer in README for possible security
+      ramifications
+    - Must use the actual path to the binary, `setcap` doesn't work with a
+      symlink
+    - Verify permissions were set with `getcap /path/to/python3.5`, should
+      return `/path/to/python3.5 = cap_sys_nice+ep`
 Usage:
     - Toggle codes on and off multiple times (useful for testing):
         - `python3 send.py test`
@@ -31,6 +34,16 @@ import ctypes.util
 import time
 import os
 from functools import wraps
+import logging
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S',
+    )
+
+logger_name = str(__file__) + " :: " + str(__name__)
+logger = logging.getLogger(logger_name)
 
 # Replace these with default codes to use with `send.py test`
 DEFAULT_TEST_ONCODE = 12345
@@ -43,33 +56,30 @@ def hi_priority(func):
 
     @wraps(func)
     def wrapper(*args, **kwargs):
+        did_sched = False
         try:
             pri = os.sched_get_priority_max(os.SCHED_RR)
             sched = os.sched_param(pri)
             os.sched_setscheduler(0, os.SCHED_RR, sched)
-
-        # AttributeError probably means running less than python3.3
-        except AttributeError as e:
-            print(e)
-            print("\nLooks like you may be running a python version less than "
-                  "3.3, which means you can't use the os.sched stuff required for the @hi_priority decorator. `send.py` may still work, "
-                  "probably just with less reliability than it would with python >= 3.3. To disable this message, comment out the `@hi_priority` decorator "
-                  "above the `rf_send` function, since it's not working anyway, or upgrade python to >= 3.3")
-            func(*args, **kwargs)
+            did_sched = True
 
         except PermissionError as e:
-            print(e)
-            print("\nLooks like you haven't set scheduling capabilities for "
-                  "your python executable, so you can't run with high "
-                  "priority. To disable this message, either consider running `sudo setcap cap_sys_nice+ep "
-                  "/path/to/python3` or comment out the `@hi_priority` decorator above the rf_send function, since it's not working anyway. NB: `setcap` will *not* work on symlinks, you "
-                  "must provide the path to the actual python3 executable.")
-            func(*args, **kwargs)
+            msg = ("Looks like you haven't set scheduling capabilities "
+                   "for your python executable, so you can't run with "
+                   "high priority. To disable this message, either consider "
+                   "running `sudo setcap cap_sys_nice+ep /path/to/python3` or "
+                   "comment out the `@hi_priority` decorator above the "
+                   "rf_send function, since it's not working anyway, or just "
+                   "increase the logging threadshold higher than `info`. NB: "
+                   "`setcap` will *not* work on symlinks, you must provide "
+                   "the path to the actual python3 executable.")
+            logger.info(e)
+            logger.info(msg)
+        func(*args, **kwargs)
 
-        else:
-            func(*args, **kwargs)
+        if did_sched:
             os.sched_yield()
-    return wrapper
+    return wrapper if sys.version_info >= (3, 3) else func
 
 
 @hi_priority
@@ -100,6 +110,16 @@ def toggle(oncodes, offcodes, sleep_time=0.5):
 
 if __name__ == '__main__':
 
+    if sys.version_info < (3, 3):
+        msg = ("Looks like you may be running a python version less than "
+               "3.3, which means you can't use the os.sched stuff required "
+               "for the @hi_priority decorator. `send.py` may still work, "
+               "probably just with less reliability than it would with python "
+               ">= 3.3. To disable this message, comment out the "
+               "`@hi_priority` decorator above the `rf_send` function, since "
+               "it's not working anyway, or upgrade python to >= 3.3, or "
+               "increase the logging threshold higher than `info`.")
+        logger.info(msg)
     if sys.argv[1] == 'test':
         oncodes_str = input("What are the on codes? (blank for default) ")
         if oncodes_str == '':
