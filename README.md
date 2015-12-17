@@ -161,7 +161,11 @@ I wanted to learn how to use c++ programs from Python, and so `send.py` is my
 first experiment with
 [`ctypes`](https://docs.python.org/3.3/library/ctypes.html). It uses the shared
 library `send.so` (created automatically when you `make`) to call the `send`
-function from `send.cpp`. `send.py` requires python3.
+function from `send.cpp`. `send.py` requires python >= 3.3 to take advantage of
+setting process priority, but will also run on python2.7 and python3.2 -- just
+with worse reliability as the lower process priority makes accurate RF
+transmission less likely. Just FYI, I don't intend to devote any time to
+maintaining python2 compatilibity in any future updates.
 
 To use `send.py` reliably, I found that the scheduling priority was critical,
 so I wrote decorator `@hi_priority` that can decorate timing-critical
