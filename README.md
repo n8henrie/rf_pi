@@ -1,6 +1,6 @@
 # [rf_pi](https://github.com/n8henrie/rf_pi)
 
-<http://n8henrie.com/2015/>
+<http://n8henrie.com/2015/12/rf_pi>
 
 Includes various scripts for configuring and testing 433 MHz RF transmission
 from a Raspberry Pi *without using sudo / root*. A number of the scripts were
