@@ -1,5 +1,4 @@
 *.o
-*.o
 *.so
 send
 RFSniffer
