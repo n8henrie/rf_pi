@@ -1,4 +1,4 @@
-"""send.py
+"""rf_send.py
 
 https://github.com/n8henrie/rf_pi
 
@@ -19,9 +19,9 @@ Prerequisites:
       return `/path/to/python3.5 = cap_sys_nice+ep`
 Usage:
     - Toggle codes on and off multiple times (useful for testing):
-        - `python3 send.py test`
+        - `python3 rf_send.py test`
     - Send a code (or list of codes) once:
-        - `python3 send.py decimal_code [ decimal_code2... ]`
+        - `python3 rf_send.py decimal_code [ decimal_code2... ]`
 
 If set to test indefinitely, prints the number of toggles sent after killed,
 making it easy to count the number observed to work and calculate reliability.
@@ -45,7 +45,7 @@ logging.basicConfig(
 logger_name = str(__file__) + " :: " + str(__name__)
 logger = logging.getLogger(logger_name)
 
-# Replace these with default codes to use with `send.py test`
+# Replace these with default codes to use with `rf_send.py test`
 DEFAULT_TEST_ONCODE = 12345
 DEFAULT_TEST_OFFCODE = 54321
 
@@ -113,7 +113,7 @@ if __name__ == '__main__':
     if sys.version_info < (3, 3):
         msg = ("Looks like you may be running a python version less than "
                "3.3, which means you can't use the os.sched stuff required "
-               "for the @hi_priority decorator. `send.py` may still work, "
+               "for the @hi_priority decorator. `rf_send.py` may still work, "
                "probably just with less reliability than it would with python "
                ">= 3.3. To disable this message, comment out the "
                "`@hi_priority` decorator above the `rf_send` function, since "

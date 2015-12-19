@@ -48,9 +48,9 @@ While this works for a standaone compiled C++ binary, e.g. `sudo setcap
 cap_sys_nice+ep send`, unfortunately it does *not* seem to work for a *script*
 called by an executable. In other words, you have to `sudo setcap
 cap_sys_nice+ep /path/to/python3.4` using the `python3` that will run
-`send.py`.  Even if you add a shebang, `chmod +x send.py`, and then `setcap` on
-`send.py`, it won't work -- you have to set the permissions on `python3.4` and
-not on `send.py`.
+`rf_send.py`.  Even if you add a shebang, `chmod +x rf_send.py`, and then
+`setcap` on `rf_send.py`, it won't work -- you have to set the permissions on
+`python3.4` and not on `rf_send.py`.
 
 The issue here is that a malicious process or coding error could make a script
 that would run indefinitely at very high priority, hogging all system
@@ -155,21 +155,23 @@ make
   switches with maximum reliability. If you put a single switch's on and off
   code as arguments, it will just flicker that switch on and off.
 
-## `send.py`
+## `rf_send.py`
 
-I wanted to learn how to use c++ programs from Python, and so `send.py` is my
-first experiment with
+I wanted to learn how to use c++ programs from Python, and so `rf_send.py` is
+my first experiment with
 [`ctypes`](https://docs.python.org/3.3/library/ctypes.html). It uses the shared
 library `send.so` (created automatically when you `make`) to call the `send`
-function from `send.cpp`. `send.py` requires python >= 3.3 to take advantage of
-setting process priority, but will also run on python2.7 and python3.2 -- just
-with worse reliability as the lower process priority makes accurate RF
-transmission less likely. Just FYI, I don't intend to devote any time to
-maintaining python2 compatilibity in any future updates.
+function from `send.cpp`. I originally had named it `send.py`, but if you try
+to `import send` from another script this gives you a naming conflict (with
+`send.so`), so I renamed it. `rf_send.py` requires python >= 3.3 to take
+advantage of setting process priority, but will also run on python2.7 and
+python3.2 -- just with worse reliability as the lower process priority makes
+accurate RF transmission less likely. Just FYI, I don't intend to devote any
+time to maintaining python2 compatilibity in any future updates.
 
-To use `send.py` reliably, I found that the scheduling priority was critical,
+To use `rf_send.py` reliably, I found that the scheduling priority was critical,
 so I wrote decorator `@hi_priority` that can decorate timing-critical
-functions. When run by a non-root user, `send.py` will raise an exception if
+functions. When run by a non-root user, `rf_send.py` will raise an exception if
 your `python3` does not have `setcap cap_sys_nice+ep`. Feel free to comment out
 `@hi_priority` above `def rf_send` if you don't believe me or want to
 experiment. To set this capability, as per above use `sudo setcap
@@ -187,10 +189,10 @@ $ file /usr/bin/python3.4
 Verify it's set with `getcap /path/to/python3.4` -- should return
 `/path/to/python3.4 = cap_sys_nice+ep`.
 
-`send.py` can either send the decimal RF code(s) given as argments, (just
+`rf_send.py` can either send the decimal RF code(s) given as argments, (just
 like `./send`), or you can run it in "test" mode, which
 
-### `send.py` usage:
+### `rf_send.py` usage:
 
-- Send a code: `python3 send.py 12345`
-- Use `test` mode: `python3 send.py test`
+- Send a code: `python3 rf_send.py 12345`
+- Use `test` mode: `python3 rf_send.py test`
