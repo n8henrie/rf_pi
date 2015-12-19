@@ -114,8 +114,11 @@ make
 - Details: <http://wiringpi.com/wiringpi-update-to-2-29>
 - Requires `bcm2835_gpiomem` kernel module
     - Check if loaded: `cat /proc/modules | grep gpio`
-- Requires the `udev` rule described at the link above, which you can copy from
-  the `extras` folder if desired
+- May require the `udev` rule described at the link above
+    - In the most recent Jessie releases, `/etc/udev/rules.d/99-com.rules`
+      is built-in and seems to suffice
+    - If needed, I've copied the wiringPi recommended `udev` rule to the
+      `extras` folder for convenience; copy to `/etc/udev/rules.d/`
 - Use the wheezy setup below if you don't want to use `/dev/gpiomem`
 
 ### Raspbian Wheezy
