@@ -1,0 +1,29 @@
+{
+  "name": "rf_pi",
+  "version": "1.0.0",
+  "description": "Control RF switches from a Raspberry Pi",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/n8henrie/rf_pi.git"
+  },
+  "keywords": [
+    "raspberrypi",
+    "rcswitch",
+    "homeautomation"
+  ],
+  "author": "Nathan Henrie",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/n8henrie/rf_pi/issues"
+  },
+  "homepage": "https://github.com/n8henrie/rf_pi#readme",
+  "dependencies": {
+    "ffi": "^2.0.0",
+    "ref": "^1.3.1",
+    "ref-array": "^1.1.2"
+  }
+}
