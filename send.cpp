@@ -35,14 +35,14 @@
 #include <string>
 #include <cstring>
 
-extern "C" int send(int num_args, int iterations, int switches[]) {
-
+extern "C" int send(int switches[], int num_switches, int iterations = 3,
+                    int pin = 17, int pulseLength = 190, int bitLength = 24){
     // Have to use the BCM pin instead of wiringPi pin (e.g. 17 instead of 0)
     // if using wiringPiSetupGpio() or wiringPiSetupSys(). See:
     // http://wiringpi.com/pins/
-    int PIN = 17;
-    int PULSELENGTH = 190;
-    int BITLENGTH = 24;
+    // int PIN = 17;
+    // int PULSELENGTH = 190;
+    // int BITLENGTH = 24;
 
     // Set the env variable to use /dev/gpiomem for easier rootless access.
     // Will *not* overwrite the existing value, so if you know you don't want
@@ -53,8 +53,8 @@ extern "C" int send(int num_args, int iterations, int switches[]) {
 
     if (wiringPiSetupGpio() == -1) return 1;
 	RCSwitch mySwitch = RCSwitch();
-	mySwitch.enableTransmit(PIN);
-    mySwitch.setPulseLength(PULSELENGTH);
+	mySwitch.enableTransmit(pin);
+    mySwitch.setPulseLength(pulseLength);
 
     // Make iteractions the outer loop and rotate through the switches inside
     // to try to maximize reliability; i.e. if you're tring to toggle 3 switches
@@ -62,12 +62,12 @@ extern "C" int send(int num_args, int iterations, int switches[]) {
     // `1 1 2 2 3 3`, which may have a higher risk of a brief timing glitch screwing
     // up a single code's transmission entirely.
     for (int i=0; i<iterations; i++) {
-        for (int n=0; n<num_args; n++) {
+        for (int n=0; n<num_switches; n++) {
            
             // Uncomment to print to stdout. Note: will print each one $iterations times
             // printf("sending code: %i\n", switches[n]);
             
-            mySwitch.send(switches[n], BITLENGTH);
+            mySwitch.send(switches[n], bitLength);
         }
     }
 
@@ -80,10 +80,10 @@ int main(int argc, char *argv[]) {
     // and decreased argc by 1 to make sure send() can receive switches from
     // either the command line via main() or ctypes from python and expect
     // the same number of args
-    int num_args = argc - 1;
-    int args[num_args];
-    for (int i=0; i<num_args; i++) {
-        args[i] = std::stoi(argv[i+1]);
+    int num_switches = argc - 1;
+    int switches[num_switches];
+    for (int i=0; i<num_switches; i++) {
+        switches[i] = std::stoi(argv[i+1]);
     }
 
     // Set scheduling if program is run directly from command line,
@@ -97,6 +97,6 @@ int main(int argc, char *argv[]) {
     sched.sched_priority = sched_get_priority_max (SCHED_RR);
     sched_setscheduler (0, SCHED_RR, &sched);
     
-    send(num_args, 3, args);
+    send(switches, num_switches);
     return 0;
 }
