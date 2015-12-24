@@ -83,7 +83,7 @@ def hi_priority(func):
 
 
 @hi_priority
-def rf_send(codes, iterations=3):
+def rf_send(codes, iterations=3, pin=17, pLength=190, bLength=24):
     """Send a list of RF codes using the RCSwitch library (by way of
     send.so)."""
     codes = [int(code) for code in codes]
@@ -95,7 +95,7 @@ def rf_send(codes, iterations=3):
     codes_arr = (ctypes.c_int * len(codes))(*codes)
 
     # Usage: codesend.send(length, iterations, codes)
-    codesend.send(len(codes), iterations, codes_arr)
+    codesend.send(codes_arr, len(codes), iterations, pin, pLength, bLength)
 
 
 def toggle(oncodes, offcodes, sleep_time=0.5):
