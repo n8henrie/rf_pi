@@ -35,19 +35,23 @@
 #include <string>
 #include <cstring>
 
-extern "C" int send(int num_args, int iterations, int switches[]) {
-
+extern "C" int send(int switches[], int num_switches, int iterations = 3,
+                    int pin = 17, int pulseLength = 190, int bitLength = 24){
     // Have to use the BCM pin instead of wiringPi pin (e.g. 17 instead of 0)
     // if using wiringPiSetupGpio() or wiringPiSetupSys(). See:
     // http://wiringpi.com/pins/
-    int PIN = 17;
-    int PULSELENGTH = 190;
-    int BITLENGTH = 24;
 
     // You can automatically export the gpio pins if desired:
     // system("gpio export 17 out");
-    
     if (wiringPiSetupSys() == -1) return 1;
+
+	RCSwitch mySwitch = RCSwitch();
+	mySwitch.enableTransmit(pin);
+    mySwitch.setPulseLength(pulseLength);
+
+    // Make iteractions the outer loop and rotate through the switches inside
+    // to try to maximize reliability; i.e. if you're tring to toggle 3 switches
+    // with codes 1, 2, and 3, and iterations = 2, send `1 2 3 1 2 3` instead of 
 	RCSwitch mySwitch = RCSwitch();
 	mySwitch.enableTransmit(PIN);
     mySwitch.setPulseLength(PULSELENGTH);
