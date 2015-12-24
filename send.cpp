@@ -44,6 +44,9 @@ extern "C" int send(int num_args, int iterations, int switches[]) {
     int PULSELENGTH = 190;
     int BITLENGTH = 24;
 
+    // You can automatically export the gpio pins if desired:
+    // system("gpio export 17 out");
+    
     if (wiringPiSetupSys() == -1) return 1;
 	RCSwitch mySwitch = RCSwitch();
 	mySwitch.enableTransmit(PIN);
