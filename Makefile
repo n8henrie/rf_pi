@@ -11,7 +11,13 @@ send: RCSwitch.o send.o
 RFSniffer: RCSwitch.o RFSniffer.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $+ -o $@ -lwiringPi
 
-.PHONY: all clean
+node:
+	npm install .
+
+.PHONY: all clean clean-all node
 
 clean:
 	$(RM) -r *.o *.so __pycache__ send RFSniffer 
+
+clean-all: clean
+	$(RM) -r node_modules
