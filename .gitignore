@@ -3,3 +3,4 @@
 send
 RFSniffer
 .python-version
+node_modules/
