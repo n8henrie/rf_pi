@@ -43,16 +43,21 @@ extern "C" int send(int switches[], int num_switches, int iterations = 3,
     
     // Set the env variable to use /dev/gpiomem for easier rootless access.
     // Will *not* overwrite the existing value, so if you know you don't want
-    // this, either `export WIRINGPI_GPIOMEM=0` beforehand or comment the line
-    // out.
+    // this, `export WIRINGPI_GPIOMEM=0` beforehand
     // http://wiringpi.com/wiringpi-update-to-2-29/
-    
     setenv("WIRINGPI_GPIOMEM", "1", 0);
-    if (wiringPiSetupGpio() == -1) return 1;
 
-    // You can automatically export the gpio pins if desired:
-    // system("gpio export 17 out");
-    // if (wiringPiSetupSys() == -1) return 1;
+    if ((strcmp(getenv("WIRINGPI_GPIOMEM"), "0") == 0) || (wiringPiSetupGpio() == -1)){
+    // Env var is `0` or can't set up `/dev/gpiomem`, so try wiringPiSetupSys
+
+      // Make sure runnning Jessie and check udev rule and /dev/gpiomem
+      // permissions. Fallback to `wiringPiSetupSys`, which depends on exported
+      // GPIO pin, either done previously through the `gpio` utility or through
+      // a `system()` call earlier in the script, e.g.: system("gpio export 17
+      // out");
+            
+      if (wiringPiSetupSys() == -1) return 1;
+    }
 
 	RCSwitch mySwitch = RCSwitch();
 	mySwitch.enableTransmit(pin);
