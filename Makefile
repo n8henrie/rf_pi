@@ -1,7 +1,7 @@
 CXX = g++-4.9
 CXXFLAGS = -std=c++11
 
-all: send RFSniffer
+all: send RFSniffer print_sched
 
 send: RCSwitch.o send.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $+ -o $@ -lwiringPi
@@ -10,6 +10,9 @@ send: RCSwitch.o send.o
 
 RFSniffer: RCSwitch.o RFSniffer.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $+ -o $@ -lwiringPi
+
+print_sched: print_sched.cpp
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $+ -o $@
 
 node:
 	npm install .
