@@ -81,6 +81,42 @@ extern "C" int send(int switches[], int num_switches, int iterations = 3,
     return 0;
 }
 
+// Convenience function for debugging sched when called directly in c++
+// http://yumichan.net/programming/obtain-a-list-of-process-scheduling-policy-and-priority/
+void debug_sched(const char* msg = "") {
+    int ret;
+    struct sched_param stSched;
+   
+    printf("%s\n", msg);
+    ret = sched_getscheduler(0); // get the policy
+    if (ret < 0) {
+        printf("Error: sched_getscheduler\n");
+    }
+
+    printf("pid 0 Policy: %d ", ret);
+
+    switch (ret) {
+        case SCHED_OTHER:
+            printf("SCHED_OTHER\t");
+            break;
+        case SCHED_FIFO:
+            printf("SCHED_FIFO\t");
+            break;
+        case SCHED_RR:
+            printf("SCHED_RR\t");
+            break;
+        default:
+            printf("No matched schedule policy!\n");
+            break;
+    };
+
+    ret = sched_getparam(0, &stSched); // get the priority
+    if (ret != 0) {
+        printf("Error: sched_getparam\n");
+    }
+    printf("Priority: %d\n\n", stSched.sched_priority);
+}
+
 int main(int argc, char *argv[]) {
    
     // argv includes executable as argv[0], so we'll need to strip off argv[0]
@@ -93,17 +129,28 @@ int main(int argc, char *argv[]) {
         switches[i] = std::stoi(argv[i+1]);
     }
 
-    // Set scheduling if program is run directly from command line,
-    // which is otherwise taken care of in Python
-    //
-    // This does the same thing as the `struct` stuff below. 20150208
-    // (void)piHiPri (99) ;
+    // Set scheduling if program is run directly from command line. Returning
+    // to the original policy doesn't affect much when called in this simple
+    // script, but is included in case this is a template for use in another
+    // long-running process, in which case only the actual RF transmission
+    // should have the max priority.
+
+    // debug_sched("Pre setting priority");
+    struct sched_param orig_sched;
+    int orig_policy = sched_getscheduler(0);
+    std::memset(&orig_sched, 0, sizeof(orig_sched));
+    sched_getparam(0, &orig_sched);
 
     struct sched_param sched;
     std::memset (&sched, 0, sizeof(sched));
     sched.sched_priority = sched_get_priority_max (SCHED_RR);
     sched_setscheduler (0, SCHED_RR, &sched);
+    // debug_sched("Post setting priority");
     
     send(switches, num_switches);
+
+    sched_setscheduler (0, orig_policy, &orig_sched);
+    // debug_sched("Post returning priority");
+
     return 0;
 }
