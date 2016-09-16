@@ -25,8 +25,7 @@ Binary: 100l01000111110110110001
 */
 
 #include "RCSwitch.h"
-#include <stdlib.h>
-#include <stdio.h>
+#include <iostream>
 
 RCSwitch mySwitch;
 
@@ -35,7 +34,7 @@ int main(int argc, char *argv[]) {
     // Use BCM number, see: https://wiringpi.com/pins
     int PIN = 27;
 
-    printf("Setting up GPIO...\n");
+    std::cout << "Setting up GPIO..." << std::endl;
     setenv("WIRINGPI_GPIOMEM", "1", 0);
     if(wiringPiSetupGpio() == -1)
         return 0;
@@ -43,7 +42,7 @@ int main(int argc, char *argv[]) {
     mySwitch = RCSwitch();
     mySwitch.enableReceive(PIN);  // Receiver on inerrupt 0 => that is pin #2
 
-    printf("RFSniffer started, click a button.\n\n");
+    std::cout << "RFSniffer started, click a button." << std::endl << std::endl;
     while(1) {
 
         if (mySwitch.available()) {
@@ -57,10 +56,10 @@ int main(int argc, char *argv[]) {
                 int pLength = mySwitch.getReceivedDelay();
                 char* bValue = mySwitch.dec2binWzerofill(value, bLength);
 
-                printf("Decimal: %i\n", value );
-                printf("Bit length: %i\n", bLength);
-                printf("Pulse length: %i\n", pLength);
-                printf("Binary: %s\n\n", bValue);
+                std::cerr << "Decimal: " << value  << std::endl;
+                std::cerr << "Bit length: " << bLength << std::endl;
+                std::cerr << "Pulse length: " << pLength << std::endl;
+                std::cerr << "Binary: " << bValue << std::endl;
 
             }
             mySwitch.resetAvailable();
