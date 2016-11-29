@@ -35,7 +35,7 @@
 #include <string>
 #include <cstring>
 
-extern "C" int send(int switches[], int num_switches, int iterations = 3,
+extern "C" int send(unsigned long long switches[], int num_switches, int iterations = 3,
                     int pin = 17, int pulseLength = 190, int bitLength = 24){
     // Have to use the BCM pin instead of wiringPi pin (e.g. 17 instead of 0)
     // if using wiringPiSetupGpio() or wiringPiSetupSys(). See:
@@ -124,9 +124,9 @@ int main(int argc, char *argv[]) {
     // either the command line via main() or ctypes from python and expect
     // the same number of args
     int num_switches = argc - 1;
-    int switches[num_switches];
+    unsigned long long switches[num_switches];
     for (int i=0; i<num_switches; i++) {
-        switches[i] = std::stoi(argv[i+1]);
+        switches[i] = std::stoll(argv[i+1]);
     }
 
     // Set scheduling if program is run directly from command line. Returning

@@ -46,7 +46,7 @@ int main(int argc, char *argv[]) {
     while(1) {
 
         if (mySwitch.available()) {
-            int value = mySwitch.getReceivedValue();
+            unsigned long long value = mySwitch.getReceivedValue();
 
             if (value == 0) {
                 printf("Unknown encoding\n");

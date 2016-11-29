@@ -34,7 +34,7 @@
 
 #include "RCSwitch.h"
 
-unsigned long RCSwitch::nReceivedValue = NULL;
+unsigned long long RCSwitch::nReceivedValue = NULL;
 unsigned int RCSwitch::nReceivedBitlength = 0;
 unsigned int RCSwitch::nReceivedDelay = 0;
 unsigned int RCSwitch::nReceivedProtocol = 0;
@@ -322,7 +322,7 @@ void RCSwitch::sendTriState(char* sCodeWord) {
   }
 }
 
-void RCSwitch::send(unsigned long Code, unsigned int length) {
+void RCSwitch::send(unsigned long long Code, unsigned int length) {
   this->send( this->dec2binWzerofill(Code, length) );
 }
 
@@ -472,7 +472,7 @@ void RCSwitch::resetAvailable() {
   RCSwitch::nReceivedValue = NULL;
 }
 
-unsigned long RCSwitch::getReceivedValue() {
+unsigned long long RCSwitch::getReceivedValue() {
     return RCSwitch::nReceivedValue;
 }
 
@@ -497,7 +497,7 @@ unsigned int* RCSwitch::getReceivedRawdata() {
  */
 bool RCSwitch::receiveProtocol1(unsigned int changeCount){
     
-	  unsigned long code = 0;
+	  unsigned long long code = 0;
       unsigned long delay = RCSwitch::timings[0] / 31;
       unsigned long delayTolerance = delay * RCSwitch::nReceiveTolerance * 0.01;    
 
@@ -533,7 +533,7 @@ bool RCSwitch::receiveProtocol1(unsigned int changeCount){
 
 bool RCSwitch::receiveProtocol2(unsigned int changeCount){
     
-	  unsigned long code = 0;
+	  unsigned long long code = 0;
       unsigned long delay = RCSwitch::timings[0] / 10;
       unsigned long delayTolerance = delay * RCSwitch::nReceiveTolerance * 0.01;    
 
@@ -604,18 +604,18 @@ void RCSwitch::handleInterrupt() {
 /**
   * Turns a decimal value to its binary representation
   */
-char* RCSwitch::dec2binWzerofill(unsigned long Dec, unsigned int bitLength){
+char* RCSwitch::dec2binWzerofill(unsigned long long Dec, unsigned int bitLength){
   static char bin[64];
   unsigned int i=0;
 
   while (Dec > 0) {
-    bin[32+i++] = ((Dec & 1) > 0) ? '1' : '0';
+    bin[64+i++] = ((Dec & 1) > 0) ? '1' : '0';
     Dec = Dec >> 1;
   }
 
   for (unsigned int j = 0; j< bitLength; j++) {
     if (j >= bitLength - i) {
-      bin[j] = bin[ 31 + i - (j - (bitLength - i)) ];
+      bin[j] = bin[ 63 + i - (j - (bitLength - i)) ];
     }else {
       bin[j] = '0';
     }

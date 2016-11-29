@@ -54,8 +54,8 @@ typedef uint8_t byte;
 
 
 // Number of maximum High/Low changes per packet.
-// We can handle up to (unsigned long) => 32 bit * 2 H/L changes per bit + 2 for sync
-#define RCSWITCH_MAX_CHANGES 67
+// We can handle up to (unsigned long long) => 64 bit * 2 H/L changes per bit + 2 for sync
+#define RCSWITCH_MAX_CHANGES 131
 
 
 class RCSwitch {
@@ -71,7 +71,7 @@ class RCSwitch {
     void switchOff(char sFamily, int nGroup, int nDevice);
 
     void sendTriState(char* Code);
-    void send(unsigned long Code, unsigned int length);
+    void send(unsigned long long Code, unsigned int length);
     void send(char* Code);
     
     void enableReceive(int interrupt);
@@ -80,7 +80,7 @@ class RCSwitch {
     bool available();
 	void resetAvailable();
 	
-    unsigned long getReceivedValue();
+    unsigned long long getReceivedValue();
     unsigned int getReceivedBitlength();
     unsigned int getReceivedDelay();
 	unsigned int getReceivedProtocol();
@@ -94,7 +94,7 @@ class RCSwitch {
 	void setProtocol(int nProtocol);
 	void setProtocol(int nProtocol, int nPulseLength);
   
-    static char* dec2binWzerofill(unsigned long dec, unsigned int length);
+    static char* dec2binWzerofill(unsigned long long dec, unsigned int length);
 
   private:
     char* getCodeWordB(int nGroupNumber, int nSwitchNumber, boolean bStatus);
@@ -118,7 +118,7 @@ class RCSwitch {
 	char nProtocol;
 
 	static int nReceiveTolerance;
-    static unsigned long nReceivedValue;
+    static unsigned long long nReceivedValue;
     static unsigned int nReceivedBitlength;
 	static unsigned int nReceivedDelay;
 	static unsigned int nReceivedProtocol;
