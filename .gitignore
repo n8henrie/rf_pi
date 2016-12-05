@@ -1,6 +1,10 @@
+# Compiled files and binaries
 *.o
 *.so
 send
 RFSniffer
+print_sched
+
+# Misc
 .python-version
 node_modules/
