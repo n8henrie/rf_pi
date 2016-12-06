@@ -35,6 +35,11 @@ I've also added an example python3 script using
 [`ctypes`](https://docs.python.org/3.3/library/ctypes.html) to show how the
 shared library can be imported and used in other language.
 
+NB: For those exclusively interested in using Python to interact with their 433
+switches, I *highly* recommend you check out <https://github.com/milaq/rpi-rf>,
+which simplifies things by porting *all* of the logic to Python instead of
+using shared libraries and C++ as I've done here.
+
 ## Disclaimer
 
 In my experience, the scheduling stuff below is necessary for optimal
