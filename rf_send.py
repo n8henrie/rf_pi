@@ -127,7 +127,10 @@ if __name__ == '__main__':
             offcodes = [DEFAULT_TEST_OFFCODE]
         else:
             offcodes_str = input("What are the off codes? ")
-            split_codes = lambda codes: [int(code) for code in codes.split()]
+
+            def split_codes(codes):
+                return [int(code) for code in codes.split()]
+
             oncodes = split_codes(oncodes_str)
             offcodes = split_codes(offcodes_str)
         times = input("How many times to toggle on and off? (Default: "
@@ -146,7 +149,7 @@ if __name__ == '__main__':
                 for _ in range(times):
                     toggle(oncodes, offcodes, sleep_time=0.5)
             except KeyboardInterrupt:
-                    print("\nThat ran {} times.".format(counter))
+                print("\nThat ran {} times.".format(counter))
 
     elif all(arg.isdigit() for arg in sys.argv[1:]):
         codes = [int(arg) for arg in sys.argv[1:]]

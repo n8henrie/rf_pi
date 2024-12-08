@@ -20,7 +20,7 @@ node:
 .PHONY: all clean clean-all node
 
 clean:
-	$(RM) -r *.o *.so __pycache__ send RFSniffer 
+	$(RM) -r *.o *.so __pycache__ send RFSniffer
 
 clean-all: clean
 	$(RM) -r node_modules
