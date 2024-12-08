@@ -1,4 +1,3 @@
-CXX = g++-4.9
 CXXFLAGS = -std=c++11
 
 all: send RFSniffer print_sched
