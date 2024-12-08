@@ -8,3 +8,4 @@ print_sched
 # Misc
 .python-version
 node_modules/
+/.env
